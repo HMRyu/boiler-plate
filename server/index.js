@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 5000
 const bodyParser = require('body-parser');
 const { User } = require("./models/User");
 const cookieParser = require('cookie-parser');
@@ -22,6 +22,10 @@ mongoose.connect(config.mongoURI, {
 .catch(err => console.log(err)) // 연결 실패 시 Error 메시지 출력
 
 app.get('/', (req, res) => res.send('Hello World!'))
+
+app.get('/api/hello', (req, res) => {
+  res.send("Hello")
+})
 
 /* 회원가입 */
 app.post('/api/users//register', (req, res) => {
@@ -87,8 +91,8 @@ app.get('/api/users/auth', auth, (req, res) => {
   })
 })
 
+// DB에서 유저 아이디와 같은 값을 찾는다면 그 아이디의 토큰 값을 빈칸으로 만들어 로그아웃 실행
 app.get('/api/users/logout', auth, (req, res) => {
-  // console.log('req.user', req.user)
   User.findOneAndUpdate({ _id: req.user._id },
     { token: "" }
     , (err, user) => {
